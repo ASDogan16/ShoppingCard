@@ -5,9 +5,13 @@ const input = document.getElementById("input")
 const filtreInput = document.getElementById("filtre")
 const sepet = document.getElementById("sepet")
 
+let urunler = []
 
+if(getItemFromLocalStorage()){
+    urunler = getItemFromLocalStorage()
 
-
+    console.log(urunler)
+}
 
 input.addEventListener("keyup", enter
 
@@ -25,7 +29,7 @@ function enter(e){
 function sepeteEkle() {
     const div = document.createElement("div")
     div.classList.add("d-flex", "align-items-center", "justify-content-between", "mt-2", "bg-light", "border", 
-    "border-dark", "p-4" , "rounded-2")
+    "border-white", "p-4" , "rounded-2")
 
     const urun = document.createElement("h4")
     urun.textContent = input.value
@@ -39,8 +43,11 @@ function sepeteEkle() {
     check.addEventListener("click", checkle)
 
     const trash = document.createElement("i")
-    trash.className = "fa-solid fa-trash fa-xl text-danger"
+    trash.className = "fa-solid fa-trash fa-xl text-danger",
 
+    trash.addEventListener("click", sil)
+
+    if(input.value.trim() != ""){
     iconDiv.append(check)
     iconDiv.append(trash)
 
@@ -48,6 +55,12 @@ function sepeteEkle() {
     div.append(iconDiv)
 
     sepet.append(div)
+
+        addToLocalStorage()
+
+    } else {
+        alert("Hayırdır dostum ! Ne yapmaya çalışıyorsun")
+    }
 
     input.value = ""
 
@@ -61,7 +74,48 @@ function checkle(){
 
     //! inputtan gelen value değerini değiştirmek için
     this.parentElement.previousElementSibling.classList.toggle("text-decoration-underline")
+    
+    //* ana divin bg'sini değiştimrke için 
+    this.parentElement.parentElement.classList.toggle("bg-white")
+    this.parentElement.parentElement.classList.toggle("bg-light")
+}
+
+
+function sil(){
+    // this.parentElement.parentElement.remove()
+
+    removeFromLocalStorage()
+
+}
+
+
+function addToLocalStorage(){
+
+    let urun = input.value.trim()
+
+    urunler.push(urun)
+
+    // console.log(urunler)
+    localStorage.setItem("urunler", JSON.stringify(urunler))
+
+}
+
+function getItemFromLocalStorage(){
+    let localItem = localStorage.getItem("urunler")
+    return JSON.parse(localItem)
+}
+
+
+function removeFromLocalStorage(){
+
+
+    // let urun = input.value.trim()
+    // console.log(urunler.indexOf(urun))
+
+
+
 }
 
 
 
+// localStorage.clear()
