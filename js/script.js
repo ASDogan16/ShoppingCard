@@ -7,7 +7,9 @@ const sepet = document.getElementById("sepet")
 
 let urunler = []
 
-if(getItemFromLocalStorage()){
+let isChecked = false
+
+if (getItemFromLocalStorage()) {
     urunler = getItemFromLocalStorage()
 
     console.log(urunler)
@@ -18,13 +20,13 @@ input.addEventListener("keyup", enter)
 filtreInput.addEventListener("input", filtreleme)
 
 
-function enter(e){
-    if(e.keyCode == 13){
+function enter(e) {
+    if (e.keyCode == 13) {
         sepeteEkle()
     }
 }
 
-function filtreleme(element){
+function filtreleme(element) {
     // console.log(element.target.value.toLowerCase())
     const sepetUrunleri = document.querySelectorAll(".sepetUrunu")
     // console.log(sepetUrunleri)
@@ -34,10 +36,10 @@ function filtreleme(element){
     sepetUrunleri.forEach(sepetUrunu => {
         let urunAdi = sepetUrunu.firstChild.firstChild.textContent.toLowerCase()
 
-        if(urunAdi.indexOf(kullaniciDeger) !== -1){
+        if (urunAdi.indexOf(kullaniciDeger) !== -1) {
             sepetUrunu.style.display = "block"
 
-        }else {
+        } else {
             sepetUrunu.style.display = "none"
         }
 
@@ -55,12 +57,12 @@ function sepeteEkle() {
     anaDiv.className = "sepetUrunu"
 
     const div = document.createElement("div")
-    div.classList.add("d-flex", "align-items-center", "justify-content-between", "mt-2", "bg-light", "border", 
-    "border-white", "p-4" , "rounded-2")
+    div.classList.add("d-flex", "align-items-center", "justify-content-between", "mt-2", "bg-light", "border",
+        "border-white", "p-4", "rounded-2")
 
     const urun = document.createElement("h4")
     urun.textContent = input.value
-    
+
     const iconDiv = document.createElement("div")
     iconDiv.setAttribute("class", "d-flex gap-3")
 
@@ -72,18 +74,18 @@ function sepeteEkle() {
     const trash = document.createElement("i")
     trash.className = "fa-solid fa-trash fa-xl text-danger",
 
-    trash.addEventListener("click", sil)
+        trash.addEventListener("click", sil)
 
-    if(input.value.trim() != ""){
-    iconDiv.append(check)
-    iconDiv.append(trash)
+    if (input.value.trim() != "") {
+        iconDiv.append(check)
+        iconDiv.append(trash)
 
-    div.append(urun)
-    div.append(iconDiv)
+        div.append(urun)
+        div.append(iconDiv)
 
-    anaDiv.append(div)
+        anaDiv.append(div)
 
-    sepet.append(anaDiv)
+        sepet.append(anaDiv)
 
         addToLocalStorage()
 
@@ -95,62 +97,99 @@ function sepeteEkle() {
 
 }
 
-function localStorageUrunleri(){
+function localStorageUrunleri() {
 
-urunler.forEach(urun => {
-    const anaDiv = document.createElement("div")
-    anaDiv.className = "sepetUrunu"
+    urunler.forEach(urun => {
+        const anaDiv = document.createElement("div")
+        anaDiv.className = "sepetUrunu"
 
-    const div = document.createElement("div")
-    div.classList.add("d-flex", "align-items-center", "justify-content-between", "mt-2", "bg-light", "border", 
-    "border-white", "p-4" , "rounded-2")
+        const div = document.createElement("div")
+        div.classList.add("d-flex", "align-items-center", "justify-content-between", "mt-2", "bg-light", "border",
+            "border-white", "p-4", "rounded-2")
 
-    const urunAdi = document.createElement("h4")
-    urunAdi.textContent = urun
-    
-    const iconDiv = document.createElement("div")
-    iconDiv.setAttribute("class", "d-flex gap-3")
+        const urunAdi = document.createElement("h4")
+        urunAdi.textContent = urun.name
 
-    const check = document.createElement("i")
-    check.className = "fa-solid fa-check text-success fa-xl"
+        const iconDiv = document.createElement("div")
+        iconDiv.setAttribute("class", "d-flex gap-3")
 
-    check.addEventListener("click", checkle)
+        const check = document.createElement("i")
+        check.className = "fa-solid fa-check text-success fa-xl"
 
-    const trash = document.createElement("i")
-    trash.className = "fa-solid fa-trash fa-xl text-danger",
+        check.addEventListener("click", checkle)
 
-    trash.addEventListener("click", sil)
+        const trash = document.createElement("i")
+        trash.className = "fa-solid fa-trash fa-xl text-danger",
 
-    iconDiv.append(check)
-    iconDiv.append(trash)
+            trash.addEventListener("click", sil)
 
-    div.append(urunAdi)
-    div.append(iconDiv)
 
-    anaDiv.append(div)
 
-    sepet.append(anaDiv)
 
-})
+        iconDiv.append(check)
+        iconDiv.append(trash)
+
+        div.append(urunAdi)
+        div.append(iconDiv)
+
+        anaDiv.append(div)
+
+        sepet.append(anaDiv)
+
+        isCheckedMi(urun, check , urunAdi, div)
+
+    })
+
+}
+
+function isCheckedMi(urun, check, urunAdi, div){
+    if(urun.isChecked === true){
+        //? check iconunu etkiler
+        check.classList.toggle("text-success")
+        check.classList.toggle("text-warning")
+
+        //! inputtan gelen value değerini değiştirmek için
+        urunAdi.classList.toggle("text-decoration-underline")
+
+        //* ana divin bg'sini değiştimrke için 
+        div.classList.toggle("bg-white")
+        div.classList.toggle("bg-light")
+    }
+}
+
+
+
+function checkle() {
+    let itemName = this.parentElement.previousElementSibling.textContent
+    //! İschecked i Güncelleme
+    urunler.forEach(urun => {
+        if (urun.name == itemName) {
+
+            urun.isChecked = !urun.isChecked
+
+            //? check iconunu etkiler
+            this.classList.toggle("text-success")
+            this.classList.toggle("text-warning")
+
+            //! inputtan gelen value değerini değiştirmek için
+            this.parentElement.previousElementSibling.classList.toggle("text-decoration-underline")
+            let itemName = this.parentElement.previousElementSibling.textContent
+
+            //* ana divin bg'sini değiştimrke için 
+            this.parentElement.parentElement.classList.toggle("bg-white")
+            this.parentElement.parentElement.classList.toggle("bg-light")
+
+            updateCheckedLocal(urun.itemName, urun.isChecked)
+        }
+    })
+
+
+
 
 }
 
 
-function checkle(){
-    //? check iconunu etkiler
-    this.classList.toggle("text-success")
-    this.classList.toggle("text-warning")
-
-    //! inputtan gelen value değerini değiştirmek için
-    this.parentElement.previousElementSibling.classList.toggle("text-decoration-underline")
-    
-    //* ana divin bg'sini değiştimrke için 
-    this.parentElement.parentElement.classList.toggle("bg-white")
-    this.parentElement.parentElement.classList.toggle("bg-light")
-}
-
-
-function sil(){
+function sil() {
     this.parentElement.parentElement.remove()
 
     // console.log(this.parentElement.previousElementSibling.textContent)
@@ -162,9 +201,14 @@ function sil(){
 }
 
 
-function addToLocalStorage(){
+function addToLocalStorage() {
 
-    let urun = input.value.trim()
+    let urun = {
+        "name": input.value.trim(),
+        "isChecked": isChecked
+    }
+
+    // let urun = input.value.trim()
 
     urunler.push(urun)
 
@@ -173,13 +217,13 @@ function addToLocalStorage(){
 
 }
 
-function getItemFromLocalStorage(){
+function getItemFromLocalStorage() {
     let localItem = localStorage.getItem("urunler")
     return JSON.parse(localItem)
 }
 
 
-function removeFromLocalStorage(urun){
+function removeFromLocalStorage(urun) {
 
     // console.log(urunler.indexOf(urun))
 
@@ -194,3 +238,23 @@ function removeFromLocalStorage(urun){
 
 
 // localStorage.clear()
+
+function updateCheckedLocal(itemName, isChecked) {
+
+    urunler.map(urun => {
+        if (urun.name == itemName) {
+            urun.isChecked = isChecked
+        }
+
+
+
+
+    })
+
+    console.log(urunler)
+
+    localStorage.setItem("urunler", JSON.stringify(urunler))
+
+
+
+}
