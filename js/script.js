@@ -58,4 +58,10 @@ function checkle(){
     //? check iconunu etkiler
     this.classList.toggle("text-success")
     this.classList.toggle("text-warning")
+
+    //! inputtan gelen value değerini değiştirmek için
+    this.parentElement.previousElementSibling.classList.toggle("text-decoration-underline")
 }
+
+
+
